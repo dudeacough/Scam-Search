@@ -11,3 +11,5 @@ craiglist and compare the images to the zillow URL.
 
 The program will return a file containing the URLs of the craiglist sites that contain photos that are simliar to the
 photos copied from the provided Zillow URL.
+
+The program is intended for personal use only.
