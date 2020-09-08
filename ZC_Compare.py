@@ -10,6 +10,7 @@ import os
 import requests
 import bs4
 import logging
+import re
 from pathlib import Path
 
 logging.basicConfig(filename='myProgramLog.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s-%(message)s')
@@ -42,8 +43,9 @@ soupZillow = bs4.BeautifulSoup(resZillow.text, 'html.parser')
 
 addressZillow = soupZillow.find('div', class_='ds-price-change-address-row')
 # TODO: Use a Regex to extract the zipcode from addressZillow.text
-
-
+zipRegex = re.compile(r'\d\d\d\d\d')  # Define Regex object for finding 5 digit zipcodes
+zipMo = zipRegex.findall(addressZillow.text)  # Finds all matches, multiple possible if address has >5 numbers
+zipcode = zipMo[-1]  # Extracts the zipcode as the last matched object in list.
 
 # TODO: Navigate to Craiglist and perform rental search based on zipcode from Zillow site
 
@@ -51,4 +53,3 @@ addressZillow = soupZillow.find('div', class_='ds-price-change-address-row')
 
 # TODO: At each Craiglist listing, download images and compare them to the Zillow images.
 # if greater than a certain % similiar, then output the CL URL to a file
-
