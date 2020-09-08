@@ -33,7 +33,7 @@ req_headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'
 }
 
-resZillow = requests.get('zillowURL', headers=req_headers)
+resZillow = requests.get(zillowURL, headers=req_headers)
 if resZillow.raise_for_status() is not None:  # Check if Response object succesful and quit if not.
     print(f'Failed to create request object from url {zillowURL}')
     sys.exit()

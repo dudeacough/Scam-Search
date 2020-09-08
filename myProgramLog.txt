@@ -1,0 +1,12 @@
+2020-09-07 20:31:14,478 - DEBUG-Starting new HTTPS connection (1): www.zillow.com:443
+2020-09-07 20:31:15,086 - DEBUG-https://www.zillow.com:443 "GET /homedetails/1075-W-State-St-A104-Redlands-CA-92373/2078163945_zpid/ HTTP/1.1" 200 None
+2020-09-07 20:31:20,546 - DEBUG-Starting new HTTPS connection (1): www.zillow.com:443
+2020-09-07 20:31:21,375 - DEBUG-https://www.zillow.com:443 "GET /homedetails/1075-W-State-St-A104-Redlands-CA-92373/2078163945_zpid/ HTTP/1.1" 200 None
+2020-09-07 20:31:28,771 - DEBUG-Starting new HTTPS connection (1): www.zillow.com:443
+2020-09-07 20:31:29,299 - DEBUG-https://www.zillow.com:443 "GET /homedetails/1075-W-State-St-A104-Redlands-CA-92373/2078163945_zpid/ HTTP/1.1" 200 None
+2020-09-07 20:31:32,013 - DEBUG-Starting new HTTPS connection (1): www.zillow.com:443
+2020-09-07 20:31:32,638 - DEBUG-https://www.zillow.com:443 "GET /homedetails/1075-W-State-St-A104-Redlands-CA-92373/2078163945_zpid/ HTTP/1.1" 200 None
+2020-09-07 20:31:37,845 - DEBUG-Starting new HTTPS connection (1): www.zillow.com:443
+2020-09-07 20:31:38,679 - DEBUG-https://www.zillow.com:443 "GET /homedetails/1075-W-State-St-A104-Redlands-CA-92373/2078163945_zpid/ HTTP/1.1" 200 None
+2020-09-07 20:34:52,963 - DEBUG-Starting new HTTPS connection (1): www.zillow.com:443
+2020-09-07 20:34:53,663 - DEBUG-https://www.zillow.com:443 "GET /homedetails/1075-W-State-St-A104-Redlands-CA-92373/2078163945_zpid/ HTTP/1.1" 200 None
