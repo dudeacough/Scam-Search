@@ -48,7 +48,7 @@ addressZillow = soupZillow.find('div', class_='ds-price-change-address-row')
 zipRegex = re.compile(r'\d\d\d\d\d')  # Define Regex object for finding 5 digit zipcodes
 zipMo = zipRegex.findall(addressZillow.text)  # Finds all matches, multiple possible if address has >5 numbers
 zipcode = zipMo[-1]  # Extracts the zipcode as the last matched object in list.
-
+print(zipcode)
 # Download home images from Zillow
 soupZillowPicElement = soupZillow.find_all('picture', class_='media-stream-photo')  # All elements with phrase picture
 # Note this above parse does not capture all Zillow images. Troubleshoot later
@@ -60,6 +60,26 @@ for step in soupZillowPicElement:
     zilPilImage.append(Image.open(BytesIO(zilResponse.content)))  # Add PIL object to list
 
 # TODO: Navigate to Craiglist and perform rental search based on zipcode from Zillow site
+
+# Note need to update to work on different craiglist websties based on zipcode
+base_IE_CL_URL = 'https://inlandempire.craigslist.org'  # Will change pending on CL specific area site
+CLSearchURL = f'{base_IE_CL_URL}/search/apa?query={zipcode}&availabilityMode=0&sale_date=all+dates'
+resCLSearch = requests.get(CLSearchURL, headers=req_headers)
+
+if resCLSearch.raise_for_status() is not None:  # Check if Response object succesful and quit if not.
+    print(f'Failed to create request object from url {CLSearchURL}')
+    sys.exit()
+
+soupCLSearch = bs4.BeautifulSoup(resCLSearch.text, 'html.parser')
+
+# TODO: Pull links for listings
+
+
+# Grab the next button url link.  Turn into own function later or incorporate into loop
+soupNextButton = soupCLSearch.find('a', class_='button next')  # Find tag 'a' with class of next button
+nextButtonURL = base_IE_CL_URL + soupNextButton.attrs['href']  # combine link with base CL url for next button link
+
+
 
 # TODO: Cycle through each search results pulled up.  Navigate to next page if necessary
 
