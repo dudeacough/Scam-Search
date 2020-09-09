@@ -12,8 +12,10 @@ import bs4
 import logging
 import re
 from pathlib import Path
+from PIL import Image
+from io import BytesIO
 
-logging.basicConfig(filename='myProgramLog.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s-%(message)s')
+# logging.basicConfig(filename='myProgramLog.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s-%(message)s')
 # logging.disable(logging.CRITICAL)
 
 # Check if URL provided in sys arguments, otherwise look at clipboard.
@@ -42,10 +44,20 @@ if resZillow.raise_for_status() is not None:  # Check if Response object succesf
 soupZillow = bs4.BeautifulSoup(resZillow.text, 'html.parser')
 
 addressZillow = soupZillow.find('div', class_='ds-price-change-address-row')
-# TODO: Use a Regex to extract the zipcode from addressZillow.text
+# Use a Regex to extract the zipcode from addressZillow.text
 zipRegex = re.compile(r'\d\d\d\d\d')  # Define Regex object for finding 5 digit zipcodes
 zipMo = zipRegex.findall(addressZillow.text)  # Finds all matches, multiple possible if address has >5 numbers
 zipcode = zipMo[-1]  # Extracts the zipcode as the last matched object in list.
+
+# Download home images from Zillow
+soupZillowPicElement = soupZillow.find_all('picture', class_='media-stream-photo')  # All elements with phrase picture
+# Note this above parse does not capture all Zillow images. Troubleshoot later
+
+zilPilImage = []  # List to hold pillow objects of Zillow Images
+for step in soupZillowPicElement:
+    zilImageURL = str(step).split('src=')[1].split('"')[1]  # Str for URL to .jpg image
+    zilResponse = requests.get(zilImageURL)  # Download image from URL
+    zilPilImage.append(Image.open(BytesIO(zilResponse.content)))  # Add PIL object to list
 
 # TODO: Navigate to Craiglist and perform rental search based on zipcode from Zillow site
 
