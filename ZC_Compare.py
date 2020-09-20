@@ -120,7 +120,7 @@ while True:
                 if rms < 500:
                     resultFile.write(str(rms) + '\n')
                     resultFile.write(links.attrs['href'] + '\n\n')
-                    break  # If match found break look
+                    break  # If match found break loop.  TODO: Should break twice or continue to CL listing.
         resultFile.write('\n')
 
     # Grab the next button url link.
