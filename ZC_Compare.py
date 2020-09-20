@@ -3,7 +3,7 @@
 # Program will compare a rental listing on Zillow with craiglist rental listings.  Duplicates on craiglist will be
 # provided as an output
 
-# TODO: Add Library Imports
+# Add Library Imports
 import pyperclip
 import sys
 import os
@@ -68,7 +68,7 @@ for step in soupZillowPicElement:
     zilResponse = requests.get(zilImageURL)  # Download image from URL
     zilPilImage.append(Image.open(BytesIO(zilResponse.content)))  # Add PIL object to list
 
-# TODO: Navigate to Craiglist and perform rental search based on zipcode from Zillow site
+# Navigate to Craiglist and perform rental search based on zipcode from Zillow site
 
 # Note need to update to work on different craiglist websties based on zipcode
 base_IE_CL_URL = 'https://inlandempire.craigslist.org'  # Will change pending on CL specific area site.
