@@ -41,24 +41,23 @@ req_headers = {
 }
 
 resZillow = requests.get(zillowURL, headers=req_headers)
-if resZillow.raise_for_status() is not None:  # Check if Response object succesful and quit if not.
     # JT: raise_for_status() raises an exception when the status is an error, which means its return code isn't relevant
     # and this code won't get run anyways. You'll have to handle the exception somehow, eg
-    # try:
-    #    resZillow.raise_for_status()
-    # except HTTPError as e:
-    #    print(f"Failed to create request object from {zillowURL}: {e}")
-    #    raise SystemExit(1)
-    print(f'Failed to create request object from url {zillowURL}')
-    sys.exit()  # JT: Minor: use `raise SystemExit(1)` here to exit the Python application with an error code 1
+try:
+    resZillow.raise_for_status()
+except HTTPError as e:
+    print(f"Failed to create request object from {zillowURL}: {e}")
+    raise SystemExit(1)  # JT: Minor: use `raise SystemExit(1)` here to exit the Python application with an error code 1
 
 soupZillow = bs4.BeautifulSoup(resZillow.text, 'html.parser')
 
 addressZillow = soupZillow.find('div', class_='ds-price-change-address-row')
 
 # Use a Regex to extract the zipcode from addressZillow.text
-zipRegex = re.compile(r'\d\d\d\d\d')  # Define Regex object for finding 5 digit zipcodes
-                                      # JT: you can use re.compile(r"\d{5}") here, the curly braces are for repetition
+zipRegex = re.compile(r'\d{5}')
+# Define Regex object for finding 5 digit zipcodes
+# JT: you can use re.compile(r"\d{5}") here, the curly braces are for repetition
+
 zipMo = zipRegex.findall(addressZillow.text)  # Finds all matches, multiple possible if address has >5 numbers
 zipcode = zipMo[-1]  # Extracts the zipcode as the last matched object in list.
 
@@ -102,9 +101,11 @@ while True:
 
     for links in soupCLlinks:  # Loop through each listing on each search page
         res = requests.get(links.attrs['href'])  # Open up info on listing
-        if res.raise_for_status() is not None:  # Check if Response object succesful and quit if not.
-            print(f'Failed to create request object from url {res}')
-            continue  # If unable to pull request, skip to next iteration
+        try:
+            resZillow.raise_for_status()
+        except HTTPError as e:
+            print(f"Failed to create request object from {zillowURL}: {e}")
+            continue
 
         logging.info(f"URL is {links.attrs['href']}")
         soupPage = bs4.BeautifulSoup(res.text, 'html.parser')
@@ -117,9 +118,9 @@ while True:
 
         clResize = []  # Reset list to hold resized craiglist images resized.  Picture size need to match for comparison
         for pic in listingCLPictures:
-            for x in range(len(zilPilImage)):
+            for x in zilPilImage:
                 # JT: ^ would probably just remove the "range" and indexing here and just use `for z in ZillPillImage: pic.resize(z.size):` etc
-                clResize.append(pic.resize(zilPilImage[x].size))
+                clResize.append(pic.resize(x.size))
 
         for imageElem in clResize:  # Comparing images on craiglist page to zillow
             clH = imageElem.histogram()
@@ -127,7 +128,7 @@ while True:
                 zH = zPic.histogram()
                 rms = math.sqrt(functools.reduce(operator.add, map(lambda a, b: (a - b)**2, clH, zH)) / len(clH))
                 logging.info(f'rms is {rms}')
-                if rms < 500:
+                if rms < 400:  # Still trying different numbers as cutoff for duplicate.  Found false postivies @ > 400
                     resultFile.write(str(rms) + '\n')
                     resultFile.write(links.attrs['href'] + '\n\n')
                     break  # If match found break loop.  TODO: Should break twice or continue to CL listing.
@@ -135,8 +136,8 @@ while True:
 
     # Grab the next button url link.
     soupNextButton = soupCLSearch.find('a', class_='button next')  # Find tag 'a' with class next button
-    if soupNextButton is None:
-        # JT: Use `if not soupNextButton:` to check if an object is not "truthy": https://docs.python.org/2.4/lib/truth.html
+    if not soupNextButton:
+        # JT: Use `if not soupNextButton:to check if an object is not "truthy": https://docs.python.org/2.4/lib/truth.html
         logging.info(f'No next button on craiglist URL {CLSearchURL}')
         break  # Stop looping when no next button link is found
     CLSearchURL = base_IE_CL_URL + soupNextButton.attrs['href']  # combine link with base CL url for next button link
